@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="lv">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QR kodi</title>
+    <script src="../favicon.js"></script>
+    <style>
+      html, body {
+        margin: 0;
+        background: #111;
+        color: #eee;
+        font-family: system-ui, sans-serif;
+      }
+      main {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 3rem;
+      }
+      label {
+        display: block;
+        margin-bottom: 0.35rem;
+        color: #aaa;
+      }
+      input {
+        width: min(40rem, 100%);
+        padding: 0.5rem 0.65rem;
+        font: inherit;
+        color: #eee;
+        background: #000;
+        border: 1px solid #444;
+        border-radius: 0.35rem;
+      }
+      button {
+        margin-top: 0.75rem;
+        padding: 0.5rem 0.9rem;
+        font: inherit;
+        color: #111;
+        background: #eee;
+        border: 0;
+        border-radius: 0.35rem;
+        cursor: pointer;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+      }
+      .card {
+        padding: 0.75rem;
+        text-align: center;
+        background: #fff;
+        color: #111;
+        border-radius: 0.4rem;
+      }
+      .card canvas {
+        width: 100%;
+        height: auto;
+      }
+      .card a {
+        display: block;
+        margin-top: 0.4rem;
+        font-size: 0.8rem;
+        word-break: break-all;
+        color: #333;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>QR kodi grāmatai</h1>
+      <p>Ievadi vietnes adresi (bez slīpsvītras beigās) un ģenerē. Kodus var izdrukāt vai saglabāt kā attēlu.</p>
+      <label for="base">Vietnes adrese</label>
+      <input id="base" type="url" placeholder="https://you.github.io/forsaisgailis" value="">
+      <button type="button" id="make">Ģenerēt 21 kodu</button>
+      <div class="grid" id="grid"></div>
+    </main>
+    <script>
+      (function () {
+        var TOTAL = 21;
+        var input = document.getElementById("base");
+        var grid = document.getElementById("grid");
+        document.getElementById("make").addEventListener("click", function () {
+          var base = input.value.trim().replace(/\/+$/, "");
+          if (!base) {
+            input.focus();
+            return;
+          }
+          grid.innerHTML = "";
+          for (var n = 1; n <= TOTAL; n++) {
+            var url = base + "/" + n + "/";
+            var card = document.createElement("div");
+            card.className = "card";
+            var label = document.createElement("strong");
+            label.textContent = String(n);
+            var canvas = document.createElement("canvas");
+            var link = document.createElement("a");
+            link.href = url;
+            link.textContent = url;
+            card.appendChild(label);
+            card.appendChild(canvas);
+            card.appendChild(link);
+            grid.appendChild(card);
+            QRCode.toCanvas(canvas, url, { width: 180, margin: 1 }, function () {});
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
